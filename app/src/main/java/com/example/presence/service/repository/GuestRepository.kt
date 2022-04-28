@@ -1,9 +1,12 @@
 package com.example.presence.service.repository
 
+import android.content.ContentValues
 import android.content.Context
+import com.example.presence.service.constants.DataBaseConstants
 import com.example.presence.service.model.GuestModel
+import java.lang.Exception
 
-class GuestRepository private constructor(context: Context){
+class GuestRepository private constructor(context: Context) {
 
     private var mGuestDataBaseHelper: GuestDataBaseHelper = GuestDataBaseHelper(context)
 
@@ -11,35 +14,46 @@ class GuestRepository private constructor(context: Context){
         private lateinit var repository: GuestRepository
 
         fun getInstance(context: Context): GuestRepository {
-            if(!::repository.isInitialized){
+            if (!::repository.isInitialized) {
                 repository = GuestRepository(context)
             }
             return GuestRepository(context)
         }
     }
 
-    fun getAll(): List<GuestModel>{
+    fun save(guest: GuestModel): Boolean {
+        return try {
+            val db = mGuestDataBaseHelper.writableDatabase
+            val insertValues = ContentValues()
+            insertValues.put(DataBaseConstants.GUEST.COLUMNS.NAME, guest.name)
+            insertValues.put(DataBaseConstants.GUEST.COLUMNS.PRESENCE, guest.presence)
+            db.insert(DataBaseConstants.GUEST.TABLE_NAME, null, insertValues)
+            true
+        } catch (e: Exception){
+            false
+        }
+
+    }
+
+    fun getAll(): List<GuestModel> {
         val list: MutableList<GuestModel> = ArrayList()
         return list
     }
 
-    fun getPresent(): List<GuestModel>{
+    fun getPresent(): List<GuestModel> {
         val list: MutableList<GuestModel> = ArrayList()
         return list
     }
 
-    fun getAbsent(): List<GuestModel>{
+    fun getAbsent(): List<GuestModel> {
         val list: MutableList<GuestModel> = ArrayList()
         return list
     }
 
-    fun save(guest: GuestModel){
-        mGuestDataBaseHelper.writableDatabase
+
+    fun update(guest: GuestModel) {
     }
 
-    fun update(guest: GuestModel){
-    }
-
-    fun delete(guest: GuestModel){
+    fun delete(guest: GuestModel) {
     }
 }

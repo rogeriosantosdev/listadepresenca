@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.activity_guest_form.*
 class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mViewModel: GuestFormViewModel
+    private var mGuestId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,33 +25,36 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
         setListeners()
         observe()
         loadData()
-    }
 
+        radio_present.isChecked = true
+    }
 
 
     override fun onClick(view: View) {
         val id = view.id
 
-        if (id == R.id.button_save){
+        if (id == R.id.button_save) {
             val name = edit_name.text.toString()
             val presence = radio_present.isChecked
 
-            mViewModel.save(name, presence)
+
+            mViewModel.save(mGuestId, name, presence)
+
         }
     }
 
-    private fun loadData(){
+    private fun loadData() {
         val bundle = intent.extras
-        if(bundle != null){
-            val id = bundle.getInt(GuestConstants.GUESTID)
-            mViewModel.load(id)
+        if (bundle != null) {
+            mGuestId = bundle.getInt(GuestConstants.GUESTID)
+            mViewModel.load(mGuestId)
         }
     }
 
 
     private fun observe() {
         mViewModel.saveGuest.observe(this, Observer {
-            if(it){
+            if (it) {
                 Toast.makeText(applicationContext, "Sucesso", Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(applicationContext, "Falha", Toast.LENGTH_SHORT).show()
@@ -60,7 +64,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
 
         mViewModel.guest.observe(this, Observer {
             edit_name.setText(it.name)
-            if(it.presence){
+            if (it.presence) {
                 radio_present.isChecked = true
             } else {
                 radio_absent.isChecked = true
@@ -69,8 +73,7 @@ class GuestFormActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-
-    private fun setListeners(){
+    private fun setListeners() {
         button_save.setOnClickListener(this)
     }
 

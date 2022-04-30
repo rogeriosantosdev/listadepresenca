@@ -35,6 +35,7 @@
         app:layout_constraintTop_toBottomOf="@id/edit_name" />
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
